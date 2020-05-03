@@ -1,0 +1,34 @@
+package com.bsejawal.s3sync.utils;
+
+import com.bsejawal.s3sync.model.Location;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class Locations {
+
+    public static Set<Location> getLocations( List<String> csvPaths) {
+        Set<Location> locations = new HashSet<>();
+        for (String fileName : csvPaths) {
+            Path pathToFile = Paths.get(fileName);
+            try (BufferedReader br = Files.newBufferedReader(pathToFile, StandardCharsets.US_ASCII)) {
+                String line = br.readLine();
+                while (line != null) {
+                    locations.add(Location.createLocation(line));
+
+                    line = br.readLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return locations;
+    }
+}
